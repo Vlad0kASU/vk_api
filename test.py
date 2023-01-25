@@ -2,6 +2,9 @@ import vk_api
 from requests_html import HTMLSession
 import wget
 import os
+from PIL import Image, ImageEnhance
+import time
+from datetime import datetime
 
 
 def captcha_handler(captcha):
@@ -26,7 +29,7 @@ def main(number):
 	)
 
 	try:
-		vk_session.auth()
+		vk_session.auth(token_only=True)
 	except vk_api.AuthError as error_msg:
 		print(error_msg)
 		return
@@ -61,6 +64,14 @@ def main(number):
 					image_href = image_href[image_href.find("'img' src") + 11:image_href.find('srcset') - 2]
 					filename = wget.download('https://www.mos.ru' + image_href)
 
+					im = Image.open(filename)
+					im = im.transpose(Image.FLIP_LEFT_RIGHT)
+					enhancer = ImageEnhance.Brightness(im)
+					im = enhancer.enhance(0.9)
+					# im.show()
+					post_image = f'{str(i+1)+filename[filename.rfind("."):]}'
+					im.save(post_image)
+
 			post_text = f'''❗{header}❗
 
 ▪ {text}
@@ -71,16 +82,36 @@ def main(number):
 
 			# print(n.html.find('section'))
 			# print(vk.wall.post(message=post_text, attachments=))
-			with open(f'output{os.sep}{i+1}.txt', 'w', encoding='utf-8') as f:
-				f.write(post_text)
-			os.replace(filename, f'output{os.sep}{str(i+1)+filename[filename.rfind("."):]}')
+			# with open(f'output{os.sep}{i+1}.txt', 'w', encoding='utf-8') as f:
+			# 	f.write(post_text)
+			os.remove(filename)
+			upload = vk_api.VkUpload(vk_session)
+			photo = upload.photo(  # Подставьте свои данные
+				post_image,
+				album_id=291053478
+			)
+			os.remove(post_image)
+			vk_photo_url = 'https://vk.com/photo{}_{}'.format(
+				photo[0]['owner_id'], photo[0]['id']
+			)
+			# print(vk_photo_url)
+			# os.replace(filename, f'output{os.sep}{str(i+1)+filename[filename.rfind("."):]}')
 			i += 1
 
-			print(vk.wall.post(message=post_text))
+			print(vk.wall.post(message=post_text,
+							   attachments=f'photo{photo[0]["owner_id"]}_{photo[0]["id"]}'))
 
 			if i == number:
 				break
 
 
 if __name__ == '__main__':
-	main(3)
+	print('Начало работы')
+	while True:
+		date = datetime.now()
+		day = str(date)[:10]
+		timet = str(date)[11:]
+		if timet[:2] in ['11', '13']:
+			main(1)
+		time.sleep(3600)
+	# main(4)
