@@ -3,8 +3,7 @@ from requests_html import HTMLSession
 import wget
 import os
 from PIL import Image, ImageEnhance
-import time
-from datetime import datetime
+
 
 
 def captcha_handler(captcha):
@@ -12,20 +11,15 @@ def captcha_handler(captcha):
 		капчи. Через метод get_url можно получить ссылку на изображение.
 		Через метод try_again можно попытаться отправить запрос с кодом капчи
 	"""
-
 	key = input("Enter captcha code {0}: ".format(captcha.get_url())).strip()
-
-	# Пробуем снова отправить запрос с капчей
 	return captcha.try_again(key)
 
 
-def main(number):
-	# """ Пример обработки капчи """
-	#
+def wallPost(number):
 	login, password = '+79012993071', 'qwerASDF1234'
 	vk_session = vk_api.VkApi(
 		login, password,
-		captcha_handler=captcha_handler  # функция для обработки капчи
+		captcha_handler=captcha_handler
 	)
 
 	try:
@@ -39,79 +33,53 @@ def main(number):
 	session = HTMLSession()
 
 	r = session.get('https://www.mos.ru/search?category=newsfeed&hostApplied=false&page=1&q=&types=news')
-	r.html.render(timeout=20)  # this call executes the js in the page
+	r.html.render(timeout=200)
 	i = 0
 	for sec in r.html.find('section'):
 		if "class=('search-result-item',)" in str(sec):
-			# print(sec)
-			# print(sec.text)
-			header = str(sec.text).split('\n')[0]
+
+			header = str(sec.text).split('\n')[0] # Заголовок
 			section_a = str(sec.find('a')[1])
 			href = section_a[section_a.find('href') + 6:section_a.find('target') - 2]
-			# print(href)
 			n = session.get(href)
-			n.html.render(timeout=20)  # this call executes the js in the page
+			n.html.render(timeout=200)
 			text = ''
-			# print(n.html.find('section'))
+			filename = ''
+			post_image = ''
 			for section in n.html.find('section'):
-
-				if 'news-article__preview' in str(section):
+				if 'news-article__preview' in str(section): # Первый абзац
 					text += section.text
-				elif 'news-article__text' in str(section):
+				elif 'news-article__text' in str(section): # Второй абзац
 					text += '\n\n▪ ' + section.find('p')[0].text
-				elif 'article-image' in str(section):
+				elif 'article-image' in str(section): # Картинка к посту
 					image_href = str(section.find('img')[0])
 					image_href = image_href[image_href.find("'img' src") + 11:image_href.find('srcset') - 2]
 					filename = wget.download('https://www.mos.ru' + image_href)
-
 					im = Image.open(filename)
 					im = im.transpose(Image.FLIP_LEFT_RIGHT)
 					enhancer = ImageEnhance.Brightness(im)
 					im = enhancer.enhance(0.9)
-					# im.show()
 					post_image = f'{str(i+1)+filename[filename.rfind("."):]}'
 					im.save(post_image)
-
 			post_text = f'''❗{header}❗
 
 ▪ {text}
 
 Подробнее можно узнать по ссылке👇
 {href}'''
-			# print(post_text)
-
-			# print(n.html.find('section'))
-			# print(vk.wall.post(message=post_text, attachments=))
-			# with open(f'output{os.sep}{i+1}.txt', 'w', encoding='utf-8') as f:
-			# 	f.write(post_text)
 			os.remove(filename)
 			upload = vk_api.VkUpload(vk_session)
-			photo = upload.photo(  # Подставьте свои данные
+			photo = upload.photo(
 				post_image,
 				album_id=291053478
 			)
 			os.remove(post_image)
-			vk_photo_url = 'https://vk.com/photo{}_{}'.format(
-				photo[0]['owner_id'], photo[0]['id']
-			)
-			# print(vk_photo_url)
-			# os.replace(filename, f'output{os.sep}{str(i+1)+filename[filename.rfind("."):]}')
 			i += 1
-
 			print(vk.wall.post(message=post_text,
 							   attachments=f'photo{photo[0]["owner_id"]}_{photo[0]["id"]}'))
-
 			if i == number:
 				break
 
 
 if __name__ == '__main__':
-	print('Начало работы')
-	while True:
-		date = datetime.now()
-		day = str(date)[:10]
-		timet = str(date)[11:]
-		if timet[:2] in ['11', '13']:
-			main(1)
-		time.sleep(3600)
-	# main(4)
+	wallPost(1)
