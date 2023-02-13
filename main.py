@@ -1,4 +1,4 @@
-from addFriens import addFriens
+from addFriends import addFriens
 from wallPost import wallPost
 from time import sleep
 from datetime import datetime
