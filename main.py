@@ -1,11 +1,11 @@
-from addFriends import addFriens
+from addFriends import addFriends
 from wallPost import wallPost
 from time import sleep
 from datetime import datetime
 
 def main():
     print('Начало работы')
-    addFriens()
+    addFriends()
     while True:
         date = datetime.now()
         time = str(date)[11:]

@@ -2,7 +2,7 @@ import vk_api
 from wallPost import captcha_handler
 
 
-def addFriens():
+def addFriends():
 	login, password = '+79012993071', 'qwerASDF1234'
 	vk_session = vk_api.VkApi(
 		login, password,
@@ -48,4 +48,4 @@ def addFriens():
 
 
 if __name__ == '__main__':
-	addFriens()
+	addFriends()
