@@ -2,8 +2,8 @@ import vk_api
 from wallPost import captcha_handler
 
 
-def addFriends():
-	login, password = '+79012993071', 'qwerASDF1234'
+def addFriends(login, password):
+	# login, password = '+79012993071', 'qwerASDF1234'
 	vk_session = vk_api.VkApi(
 		login, password,
 		captcha_handler=captcha_handler

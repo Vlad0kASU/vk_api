@@ -15,8 +15,8 @@ def captcha_handler(captcha):
 	return captcha.try_again(key)
 
 
-def wallPost(number):
-	login, password = '+79012993071', 'qwerASDF1234'
+def wallPost(number, login, password):
+	# login, password = '+79012993071', 'qwerASDF1234'
 	vk_session = vk_api.VkApi(
 		login, password,
 		captcha_handler=captcha_handler

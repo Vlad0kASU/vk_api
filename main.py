@@ -5,12 +5,14 @@ from datetime import datetime
 
 def main():
     print('Начало работы')
+    phone = input()
+    password = input()
     while True:
         date = datetime.now()
         time = str(date)[11:]
         if time[:2] in ['11', '13']:
-            wallPost(1)
-            addFriends()
+            wallPost(1, phone, password)
+            addFriends(phone, password)
         sleep(3600)
 
 
