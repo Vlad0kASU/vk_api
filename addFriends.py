@@ -23,7 +23,7 @@ def addFriends():
 	# count_requests = friends.result['count']
 	list_requests = friends.result['items']
 
-	for i in range(30):
+	for i in range(15):
 		with vk_api.VkRequestsPool(vk_session) as pool:
 			pool.method('friends.add', {
 				'user_id': list_requests[i]['id']

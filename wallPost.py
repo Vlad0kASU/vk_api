@@ -75,8 +75,12 @@ def wallPost(number):
 			)
 			os.remove(post_image)
 			i += 1
-			print(vk.wall.post(message=post_text,
-							   attachments=f'photo{photo[0]["owner_id"]}_{photo[0]["id"]}'))
+			media_id = vk.wall.post(message=post_text,
+							   attachments=f'photo{photo[0]["owner_id"]}_{photo[0]["id"]}')['post_id']
+			print(media_id)
+			# media_id = 213
+			# print(vk.messages.send(user_id=182214266,
+			# 					   attachments=f'wall732800790_{media_id}'))
 			if i == number:
 				break
 
