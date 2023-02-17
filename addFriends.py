@@ -28,7 +28,7 @@ def addFriends(login, password):
 			pool.method('friends.add', {
 				'user_id': list_requests[i]['id']
 			})
-	print('Отправлено 30 заявок в друзья')
+	print('Отправлено 15 заявок в друзья')
 
 	'''
 	Одобрение всех заявок в друзья, которые есть на данный момент
@@ -48,4 +48,4 @@ def addFriends(login, password):
 
 
 if __name__ == '__main__':
-	addFriends()
+	addFriends('+79012993071', 'qwerASDF1234')
