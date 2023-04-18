@@ -5,14 +5,16 @@ from datetime import datetime
 
 def main():
     print('Начало работы')
-    phone = input()
-    password = input()
+    phone = '+79012993071'
+    password = 'qwerASDF1234'
     while True:
         date = datetime.now()
         time = str(date)[11:]
-        if time[:2] in ['11', '13']:
+        if time[:2] in ['11', '14']:
             wallPost(1, phone, password)
             addFriends(phone, password)
+            with open('отчет.txt', 'a', encoding='utf-8') as f:
+                print(date, file=f)
         sleep(3600)
 
 

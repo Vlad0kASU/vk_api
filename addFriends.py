@@ -22,13 +22,13 @@ def addFriends(login, password):
 
 	# count_requests = friends.result['count']
 	list_requests = friends.result['items']
-
-	for i in range(15):
+	number_friends = 40
+	for i in range(number_friends):
 		with vk_api.VkRequestsPool(vk_session) as pool:
 			pool.method('friends.add', {
 				'user_id': list_requests[i]['id']
 			})
-	print('Отправлено 15 заявок в друзья')
+	print(f'Отправлено {number_friends} заявок в друзья')
 
 	'''
 	Одобрение всех заявок в друзья, которые есть на данный момент

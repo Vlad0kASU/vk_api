@@ -77,7 +77,7 @@ def wallPost(number, login, password):
 			i += 1
 			media_id = vk.wall.post(message=post_text,
 							   attachments=f'photo{photo[0]["owner_id"]}_{photo[0]["id"]}')['post_id']
-			print(media_id)
+			print('\nВыложен пост с ID:', media_id, sep='')
 			# media_id = 213
 			# print(vk.messages.send(user_id=182214266,
 			# 					   attachments=f'wall732800790_{media_id}'))
@@ -86,4 +86,4 @@ def wallPost(number, login, password):
 
 
 if __name__ == '__main__':
-	wallPost(1)
+	wallPost(1,'+79012993071', 'qwerASDF1234')
